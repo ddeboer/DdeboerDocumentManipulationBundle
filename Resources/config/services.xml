@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="ddeboer_document_manipulation.manipulator"
+                 class="Ddeboer\DocumentManipulationBundle\Manipulator">
+            <argument type="service" id="ddeboer_document_manipulation.doc_manipulator" />
+            <argument type="service" id="ddeboer_document_manipulation.pdf_manipulator" />
+        </service>
+
+        <service id="ddeboer_document_manipulation.doc_manipulator"
+                 class="Ddeboer\DocumentManipulationBundle\Manipulator\DocManipulator">
+        </service>
+
+        <service id="ddeboer_document_manipulation.pdf_manipulator.pdftk"
+                 class="Ddeboer\DocumentManipulationBundle\Manipulator\Pdf\Pdftk">
+            <argument>%ddeboer_document_manipulation.pdftk.binary%</argument>
+        </service>
+
+        <service id="ddeboer_document_manipulation.pdf_manipulator"
+                 class="Ddeboer\DocumentManipulationBundle\Manipulator\PdfManipulator">
+            <argument type="service" id="ddeboer_document_manipulation.pdf_manipulator.pdftk" />
+        </service>
+
+    </services>
+
+</container>
