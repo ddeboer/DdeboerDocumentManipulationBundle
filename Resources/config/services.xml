@@ -6,6 +6,18 @@
 
     <services>
 
+        <service id="ddeboer_document_manipulation.manipulator_collection"
+                 class="Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorCollection">
+            <call method="add">
+                <argument type="service" id="ddeboer_document_manipulation.manipulator.live_docx_manipulator" />
+            </call>
+        </service>
+
+        <service id="ddeboer_document_manipulation.manipulator.live_docx_manipulator"
+                 class="Ddeboer\DocumentManipulationBundle\Manipulator\LiveDocxManipulator">
+            <argument type="service" id="ddeboer_document.manipulation.livedocx" />
+        </service>
+
         <service id="ddeboer_document_manipulation.manipulator"
                  class="Ddeboer\DocumentManipulationBundle\Manipulator">
             <argument type="service" id="ddeboer_document_manipulation.doc_manipulator" />

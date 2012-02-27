@@ -2,16 +2,16 @@
 
 namespace Ddeboer\DocumentManipulationBundle;
 
-use Ddeboer\Manipulator;
 use Symfony\Component\HttpFoundation\File\File;
+use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorCollection;
 
 class DocumentFactory implements DocumentFactoryInterface
 {
     protected $manipulators = array();
 
-    public function __construct(array $manipulators)
+    public function __construct(ManipulatorCollection $manipulators)
     {
-        $this->manpulators = $manipulators;
+        $this->manipulators = $manipulators;
     }
 
     /**
@@ -22,14 +22,22 @@ class DocumentFactory implements DocumentFactoryInterface
         $file = new File($filename);
         switch ($file->getMimeType()) {
             case 'application/pdf':
-                return new Document($file, $this->pdfManipulator);
+                return new Document($file, DocumentInterface::TYPE_PDF, $this->manipulators);
 
                 break;
 
             default:
                 break;
+        }
 
-            throw new \Exception('unknown type ' . $file->getMimeType());
+        switch ($file->getExtension()) {
+            case 'docx':
+                return new Document($file, DocumentInterface::TYPE_DOCX, $this->manipulators);
+
+                break;
+
+            default:
+                break;
         }
     }
 
