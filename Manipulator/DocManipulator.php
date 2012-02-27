@@ -24,12 +24,17 @@ class DocManipulator
 
     public function merge(File $file, \Traversable $data, $outputFile, $format = 'pdf')
     {
+        // Calculate MD5 hash for file
+        $hash = md5_file($file->getPathname());
+        $tmpFile = sys_get_temp_dir() . '/' . $hash;
+        copy($file->getPathname(), $tmpFile);
+
         // Upload local template to server if it hasn't been uploaded yet
-        if (!$this->liveDocx->templateExists($file->getFilename())) {
-            $this->liveDocx->uploadTemplate($file->getPathname());
+        if (!$this->liveDocx->templateExists($hash)) {
+            $this->liveDocx->uploadTemplate($tmpFile);
         }
-        $this->liveDocx->setRemoteTemplate($file->getFilename());
-//        $this->liveDocx->setLocalTemplate($file->getPathname());
+
+        $this->liveDocx->setLocalTemplate($file->getPathname());
 
         foreach ($data as $field => $value) {
             $this->liveDocx->assign($field, $value);
