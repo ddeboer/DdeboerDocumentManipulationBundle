@@ -14,5 +14,5 @@ interface DocumentFactoryInterface
     /**
      * @return DocumentInterface
      */
-    function load($string, $type);
+    function load($string, $type = null);
 }
