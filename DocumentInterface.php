@@ -7,8 +7,10 @@ namespace Ddeboer\DocumentManipulationBundle;
  */
 interface DocumentInterface
 {
-    const TYPE_PDF = 'pdf';
+    const TYPE_DOC  = 'doc';
     const TYPE_DOCX = 'docx';
+    const TYPE_PDF  = 'pdf';
+    
 
     /**
      * Save the document to a file
@@ -17,7 +19,7 @@ interface DocumentInterface
      * @param string $type      Type to save file as 
      * @return DocumentInterface
      */
-    function save($filename = null, $type = null);
+    function save($filename = null);
 
     /**
      * (Mail) merge this document with data
@@ -32,7 +34,7 @@ interface DocumentInterface
      * 
      * @return DocumentInterface 
      */
-    function append(self $document);
+    function append(DocumentInterface $document);
 
     /**
      * Append multiple documents to this document

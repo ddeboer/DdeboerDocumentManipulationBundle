@@ -20,25 +20,9 @@ class DocumentFactory implements DocumentFactoryInterface
     public function open($filename)
     {
         $file = new File($filename);
-        switch ($file->getMimeType()) {
-            case 'application/pdf':
-                return new Document($file, DocumentInterface::TYPE_PDF, $this->manipulators);
-
-                break;
-
-            default:
-                break;
-        }
-
-        switch ($file->getExtension()) {
-            case 'docx':
-                return new Document($file, DocumentInterface::TYPE_DOCX, $this->manipulators);
-
-                break;
-
-            default:
-                break;
-        }
+        $document = new Document($this->manipulators);
+        $document->setFile($file);
+        return $document;
     }
 
     /**
@@ -46,8 +30,7 @@ class DocumentFactory implements DocumentFactoryInterface
      */
     public function load($string, $type)
     {
-        $filename = $this->createTempfile($string);
-        return $this->open($filename);
+        throw new \BadMethodCallException('Load method not yet implemented');
     }
 
     /**

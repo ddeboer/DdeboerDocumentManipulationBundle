@@ -10,24 +10,42 @@ class Document implements DocumentInterface
     /**
      * @var File
      */
-    private $file;
+    protected $file;
 
-    private $type;
+    protected $contents;
 
-    const TYPE_DOC = 'doc';
-
-    /**
-     *
-     * @param type $file
-     * @param type $type
-     *
-     * @todo Use Symfony2’s File object instead
-     */
-    public function __construct($file, $type, ManipulatorCollection $manipulators)
+    protected $type;
+    
+    public function __construct(ManipulatorCollection $manipulators)
     {
-        $this->file = $file;
-        $this->type = $type;
         $this->manipulators = $manipulators;
+    }
+
+    public function setFile(File $file)
+    {
+        switch ($file->getMimeType()) {
+            case 'application/pdf':                
+                $this->file = $file;
+                $this->setType(DocumentInterface::TYPE_PDF);
+                return $this;                
+            case 'application/msword':
+                $this->file = $file;
+                $this->setType(DocumentInterface::TYPE_DOC);
+                return $this;
+
+            default:
+                break;
+        }
+
+        switch ($file->getExtension()) {
+            case 'docx':
+                $this->file = $file;
+                $this->setType(DocumentInterface::TYPE_DOCX);
+                return $this;
+
+            default:
+                break;
+        }
     }
 
     /**
@@ -35,7 +53,32 @@ class Document implements DocumentInterface
      */
     public function getFile()
     {
+        if (null === $this->file && $this->contents) {
+            $filename = $this->createTempfile();
+            file_put_contents($filename, $this->contents);
+            $this->file = new File($filename);
+        }
+
         return $this->file;
+    }
+
+    public function getContents()
+    {
+        if (!$this->contents && $this->file) {
+            $this->contents = file_get_contents($this->file->getPathname());
+        }
+
+        return $this->contents;
+    }
+
+    public function setContents($contents)
+    {
+        $this->contents = $contents;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 
     public function getType()
@@ -58,18 +101,27 @@ class Document implements DocumentInterface
         return self::TYPE_PDF === $this->getType();
     }
 
-     function save($filename = null, $type = null)
-     {
-         
-     }
-
     /**
      * {@inheritdoc}
      */
+    public function save($filename = null)
+    {
+        if (!$filename) {
+            $filename = $this->createTempfile();
+        }
+
+        file_put_contents($filename, $this->getContents());
+        $this->setFile(new File($filename));
+
+        return $this;
+    }
+
+    /**
+     * @return DocumentInterface
+     */
     function merge(DocumentDataInterface $data)
     {
-        return $this->manipulators->findManipulator($this->type, 'merge')
-            ->merge($this, $data);
+        return $this->manipulators->merge($this, $data);
     }
 
     /**
@@ -77,9 +129,9 @@ class Document implements DocumentInterface
      *
      * @return DocumentInterface
      */
-    function append(self $document)
+    public function append(DocumentInterface $document)
     {
-
+        return $this->manipulators->append($this, $document);
     }
 
     /**
@@ -151,4 +203,11 @@ class Document implements DocumentInterface
     {
         
     }
+
+    protected function createTempfile()
+    {
+        $filename = tempnam('/tmp', 'doc_');
+        return $filename;
+    }
+
 }
