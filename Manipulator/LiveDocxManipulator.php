@@ -5,8 +5,15 @@ namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 use Ddeboer\DocumentManipulationBundle\DocumentInterface;
 use Ddeboer\DocumentManipulationBundle\DocumentDataInterface;
 use Ddeboer\DocumentManipulationBundle\ManipulatorInterface;
+use Symfony\Component\HttpFoundation\File\File;
 use Zend\Service\LiveDocx\MailMerge;
 
+/**
+ * A manipulator that uses the LiveDocx web service to merge and convert
+ * Doc and DocX files
+ *
+ * @author David de Boer <david@ddeboer.nl>
+ */
 class LiveDocxManipulator implements ManipulatorInterface
 {
     protected $liveDocx;
@@ -16,12 +23,17 @@ class LiveDocxManipulator implements ManipulatorInterface
         $this->liveDocx = $liveDocx;
     }
 
-    public function merge(DocumentInterface $document, DocumentDataInterface $data, $format = 'pdf')
+    /**
+     * @param DocumentInterface $document
+     * @param DocumentDataInterface $data
+     * @param type $format
+     * @return type
+     */
+    public function merge(File $file, \Traversable $data, $format = 'pdf')
     {
-        $file = $document->getFile();
         // Calculate MD5 hash for file
         $hash = md5_file($file->getPathname());
-        $tmpFile = sys_get_temp_dir() . '/' . $hash;
+        $tmpFile = sys_get_temp_dir() . '/' . $hash;        
         copy($file->getPathname(), $tmpFile);
 
         // Upload local template to server if it hasn't been uploaded yet
@@ -36,15 +48,17 @@ class LiveDocxManipulator implements ManipulatorInterface
         }
 
         $this->liveDocx->createDocument();
-        $document = $this->liveDocx->retrieveDocument($format);
-        file_put_contents($outputFile, $document);
-
-        return $outputFile;
+        $contents = $this->liveDocx->retrieveDocument($format);
+        return $contents;
     }
 
-    public function supports($type)
+    /**
+     * {@inheritdoc}
+     */
+    public function supports($type, $operation)
     {
-        if ($type === 'doc' || $type === 'docx') {
+        if (in_array($type, array('doc', 'docx'))
+            && in_array($operation, array('merge', 'convert'))) {
             return true;
         }
 

@@ -4,5 +4,8 @@ namespace Ddeboer\DocumentManipulationBundle;
 
 interface ManipulatorInterface
 {
-    function supports($type);    
+    /**
+     * @return boolean
+     */
+    function supports($type, $operation);
 }

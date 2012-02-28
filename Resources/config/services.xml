@@ -6,36 +6,30 @@
 
     <services>
 
+        <service id="ddeboer_document_manipulation.factory"
+                 class="Ddeboer\DocumentManipulationBundle\DocumentFactory">
+            <argument type="service" id="ddeboer_document_manipulation.manipulator_collection" />
+        </service>
+
         <service id="ddeboer_document_manipulation.manipulator_collection"
                  class="Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorCollection">
-            <call method="add">
-                <argument type="service" id="ddeboer_document_manipulation.manipulator.live_docx_manipulator" />
-            </call>
         </service>
 
-        <service id="ddeboer_document_manipulation.manipulator.live_docx_manipulator"
-                 class="Ddeboer\DocumentManipulationBundle\Manipulator\LiveDocxManipulator">
-            <argument type="service" id="ddeboer_document.manipulation.livedocx" />
+        <service id="ddeboer_document_manipulation.manipulator.live_docx"
+                 class="Ddeboer\DocumentManipulationBundle\Manipulator\LiveDocxManipulator"
+                 abstract="true">
+            <tag name="ddeboer_document_manipulation.manipulator" />
         </service>
 
-        <service id="ddeboer_document_manipulation.manipulator"
-                 class="Ddeboer\DocumentManipulationBundle\Manipulator">
-            <argument type="service" id="ddeboer_document_manipulation.doc_manipulator" />
-            <argument type="service" id="ddeboer_document_manipulation.pdf_manipulator" />
+        <service id="ddeboer_document_manipulation.manipulator.pdftk_manipulator"
+                 class="Ddeboer\DocumentManipulationBundle\Manipulator\PdftkManipulator">
+            <argument type="service" id="ddeboer_document_manipulation.pdftk" />
+            <tag name="ddeboer_document_manipulation.manipulator" />
         </service>
 
-        <service id="ddeboer_document_manipulation.doc_manipulator"
-                 class="Ddeboer\DocumentManipulationBundle\Manipulator\DocManipulator">
-        </service>
-
-        <service id="ddeboer_document_manipulation.pdf_manipulator.pdftk"
-                 class="Ddeboer\DocumentManipulationBundle\Manipulator\Pdf\Pdftk">
+        <service id="ddeboer_document_manipulation.pdftk"
+                 class="Ddeboer\DocumentManipulationBundle\Manipulator\PdftkManipulator\Pdftk">
             <argument>%ddeboer_document_manipulation.pdftk.binary%</argument>
-        </service>
-
-        <service id="ddeboer_document_manipulation.pdf_manipulator"
-                 class="Ddeboer\DocumentManipulationBundle\Manipulator\PdfManipulator">
-            <argument type="service" id="ddeboer_document_manipulation.pdf_manipulator.pdftk" />
         </service>
 
     </services>

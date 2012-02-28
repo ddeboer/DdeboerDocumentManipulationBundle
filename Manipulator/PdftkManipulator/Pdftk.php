@@ -1,6 +1,6 @@
 <?php
 
-namespace Ddeboer\DocumentManipulationBundle\Manipulator\Pdf;
+namespace Ddeboer\DocumentManipulationBundle\Manipulator\PdftkManipulator;
 
 /**
  * A simple wrapper around the pdftk command line utility

@@ -7,6 +7,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -34,13 +35,14 @@ class DdeboerDocumentManipulationExtension extends Extension
         if (isset($config['livedocx'])) {
             $liveDocx = $this->addLiveDocx($config['livedocx']);
             $container->setDefinition(
-                'ddeboer_document.manipulation.livedocx', 
+                'ddeboer_document.manipulation.manipulator.live_docx.mail_merge',
                 $liveDocx
             );
             
             $container
-                ->getDefinition('ddeboer_document_manipulation.doc_manipulator')
-                ->addMethodCall('setLiveDocx', array($liveDocx));
+                ->getDefinition('ddeboer_document_manipulation.manipulator.live_docx')
+                ->setAbstract(false)
+                ->addArgument(new Reference('ddeboer_document.manipulation.manipulator.live_docx.mail_merge'));
         }
     }
 
