@@ -3,45 +3,49 @@
 namespace Ddeboer\DocumentManipulationBundle;
 
 use Symfony\Component\HttpFoundation\File\File;
+use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorCollection;
 
-class Document
+class Document implements DocumentInterface
 {
     /**
      * @var File
      */
-    private $file;
+    protected $file;
 
-    private $type;
+    protected $contents;
 
-    const TYPE_PDF = 'pdf';
-    const TYPE_DOC = 'doc';
-
-    /**
-     *
-     * @param type $file
-     * @param type $type
-     *
-     * @todo Use Symfony2’s File object instead
-     */
-    public function __construct($file, $type = null)
+    protected $type;
+    
+    public function __construct(ManipulatorCollection $manipulators)
     {
-        if (!$file instanceof File) {
-            $file = new File($file);
+        $this->manipulators = $manipulators;
+    }
+
+    public function setFile(File $file)
+    {
+        switch ($file->getMimeType()) {
+            case 'application/pdf':                
+                $this->file = $file;
+                $this->setType(DocumentInterface::TYPE_PDF);
+                return $this;                
+            case 'application/msword':
+                $this->file = $file;
+                $this->setType(DocumentInterface::TYPE_DOC);
+                return $this;
+
+            default:
+                break;
         }
 
-        $this->file = $file;
+        switch ($file->getExtension()) {
+            case 'docx':
+                $this->file = $file;
+                $this->setType(DocumentInterface::TYPE_DOCX);
+                return $this;
 
-        if (!$type) {
-            switch ($file->getMimeType()) {
-                case 'application/pdf':
-                    $this->type = self::TYPE_PDF;
-                    break;
-
-                default:
-                    break;
-            }
+            default:
+                break;
         }
-        $this->type = $type;
     }
 
     /**
@@ -49,7 +53,32 @@ class Document
      */
     public function getFile()
     {
+        if (null === $this->file && $this->contents) {
+            $filename = $this->createTempfile();
+            file_put_contents($filename, $this->contents);
+            $this->file = new File($filename);
+        }
+
         return $this->file;
+    }
+
+    public function getContents()
+    {
+        if (!$this->contents && $this->file) {
+            $this->contents = file_get_contents($this->file->getPathname());
+        }
+
+        return $this->contents;
+    }
+
+    public function setContents($contents)
+    {
+        $this->contents = $contents;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 
     public function getType()
@@ -71,4 +100,114 @@ class Document
     {
         return self::TYPE_PDF === $this->getType();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function save($filename = null)
+    {
+        if (!$filename) {
+            $filename = $this->createTempfile();
+        }
+
+        file_put_contents($filename, $this->getContents());
+        $this->setFile(new File($filename));
+
+        return $this;
+    }
+
+    /**
+     * @return DocumentInterface
+     */
+    function merge(DocumentDataInterface $data)
+    {
+        return $this->manipulators->merge($this, $data);
+    }
+
+    /**
+     * Append another document to this document
+     *
+     * @return DocumentInterface
+     */
+    public function append(DocumentInterface $document)
+    {
+        return $this->manipulators->append($this, $document);
+    }
+
+    /**
+     * Append multiple documents to this document
+     *
+     * @return DocumentInterface
+     */
+    function appendMultiple(array $documents)
+    {
+
+    }
+
+    /**
+     * Append this document to another document
+     *
+     * @return DocumentInterface
+     */
+    function appendTo(self $document)
+    {
+
+    }
+
+    /**
+     * Prepend another document to this document
+     *
+     * @return DocumentInterface
+     */
+    function prepend(self $document)
+    {
+
+    }
+
+    /**
+     * Prepend multiple documents to this document
+     */
+    function prependMultiple(array $documents)
+    {
+
+    }
+
+    /**
+     * Prepend this document to another document
+     *
+     * @return DocumentInterface
+     */
+    function prependTo(self $document)
+    {
+
+    }
+
+    /**
+     * Put this document in front of another document
+     *
+     * @return DocumentInterface $background
+     * @param DocumentInterface $document   The background document
+     */
+    function putInFront(self $background)
+    {
+
+    }
+
+    /**
+     * Put this document behind another document
+     *
+     * @param DocumentInterface $foreground
+     * @return DocumentInterface
+     */
+    function putBehind(self $foreground)
+    {
+        
+    }
+
+    protected function createTempfile()
+    {
+        $filename = tempnam('/tmp', 'doc_');
+        return $filename;
+    }
+
 }

@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Context value collection
  */
-class DocumentData implements \IteratorAggregate, \Countable, \ArrayAccess
+class DocumentData implements \IteratorAggregate, \Countable, \ArrayAccess, DocumentDataInterface
 {
     protected $values = array();
 

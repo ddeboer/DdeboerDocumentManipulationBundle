@@ -5,7 +5,7 @@ namespace Ddeboer\DocumentManipulationBundle;
 use Ddeboer\DocumentManipulationBundle\Manipulator\DocManipulator;
 use Ddeboer\DocumentManipulationBundle\Manipulator\PdfManipulator;
 
-class Manipulator
+class Manipulator implements ManipulatorInterface
 {
     /**
      * @var PdfManipulator
@@ -25,10 +25,25 @@ class Manipulator
     }
 
     /**
+     * Open a file and return a document
+     *
+     * @return Document
+     */
+    public function open($filename)
+    {
+        return new Document($filename);
+    }
+
+    public function load($string)
+    {
+
+    }
+
+    /**
      * Concatenate two or more documents
      * 
      * @param array $documents
-     * @return Document
+     * @return Document         Concatenated document
      * @throws \InvalidArgumentException
      */
     public function concatenate(array $documents)
@@ -37,7 +52,7 @@ class Manipulator
         foreach ($documents as $document) {
             if (Document::TYPE_PDF != $document->getType()) {
                 throw new \InvalidArgumentException(
-                    'For concatenation, both document must be PDFs'
+                    'For concatenation, both documents must be PDFs'
                 );
             }
 
@@ -74,7 +89,13 @@ class Manipulator
         return new Document($outputFile, 'pdf');
     }
 
-    public function convert($file, $type)
+    /**
+     * Convert a document from one type into another
+     *
+     * @param Document $document
+     * @param string $toType    Type to convert into
+     */
+    public function convert(Document $document, $toType)
     {
         
     }
