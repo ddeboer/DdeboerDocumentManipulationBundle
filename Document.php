@@ -74,6 +74,22 @@ class Document implements DocumentInterface
     public function setContents($contents)
     {
         $this->contents = $contents;
+
+        // Guess type from contents
+        $finfo = new \finfo(\FILEINFO_MIME);
+        $finfo->buffer($contents);
+        if (1 === preg_match('/^(.*);/', $finfo->buffer($contents), $matches)) {
+            switch ($matches[1]) {
+                case 'application/pdf':
+                    $this->setType(DocumentInterface::TYPE_PDF);
+                    return;
+                case 'application/msword':
+                    $this->setType(DocumentInterface::TYPE_DOC);
+                    return;
+                default:
+                    $this->setType(DocumentInterface::TYPE_DOCX);
+            }
+        }
     }
 
     public function setType($type)

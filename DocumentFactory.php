@@ -28,9 +28,14 @@ class DocumentFactory implements DocumentFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function load($string, $type)
+    public function load($string, $type = null)
     {
-        throw new \BadMethodCallException('Load method not yet implemented');
+        $document = new Document($this->manipulators);
+        $document->setContents($string);
+        if ($type) {
+            $document->setType($type);
+        }
+        return $document;
     }
 
     /**
