@@ -5,22 +5,21 @@ namespace Ddeboer\DocumentManipulationBundle\Tests;
 use Ddeboer\DocumentManipulationBundle\DocumentFactory;
 use Ddeboer\DocumentManipulationBundle\DocumentData;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorCollection;
 
-class DocumentFactoryTest extends WebTestCase
+use Ddeboer\DocumentManipulationBundle\Document;
+
+class DocumentFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testOpen()
     {
-        $client = $this->createClient();
-        $manipulators = $client->getContainer()->get('ddeboer_document_manipulation.manipulator_collection');
-        $factory = new DocumentFactory($manipulators);
+        $factory = new DocumentFactory(new ManipulatorCollection(array()));
         $document = $factory->open(__DIR__.'/Fixtures/document.docx');
         $this->assertInstanceOf('Ddeboer\DocumentManipulationBundle\DocumentInterface', $document);
+    }
 
-        $data = new DocumentData(array('merge_field' => 'Bond, James Bond'));
+    public function testLoad()
+    {
 
-        $factory
-            ->open(__DIR__.'/Fixtures/document.docx')
-            ->merge($data)
-            ->save();
     }
 }
