@@ -32,8 +32,9 @@ class LiveDocxManipulator implements ManipulatorInterface
     public function merge(File $file, \Traversable $data, $format = 'pdf')
     {
         // Calculate MD5 hash for file
-        $hash = md5_file($file->getPathname());
-        $tmpFile = sys_get_temp_dir() . '/' . $hash;        
+        // LiveDocx seems to require a file extension
+        $hash = md5_file($file->getPathname()) . '.' . $file->getExtension();
+        $tmpFile = sys_get_temp_dir() . '/' . $hash;
         copy($file->getPathname(), $tmpFile);
 
         // Upload local template to server if it hasn't been uploaded yet
@@ -41,7 +42,7 @@ class LiveDocxManipulator implements ManipulatorInterface
             $this->liveDocx->uploadTemplate($tmpFile);
         }
 
-        $this->liveDocx->setLocalTemplate($file->getPathname());
+        $this->liveDocx->setRemoteTemplate($hash);
 
         foreach ($data as $field => $value) {
             $this->liveDocx->assign($field, $value);
