@@ -83,4 +83,26 @@ class ManipulatorCollection
 
         return $document;
     }
+
+    public function appendMultiple(DocumentInterface $document1, array $otherDocuments)
+    {
+        $outputFile = $this->findManipulator($document1->getType(), 'appendMultiple')
+            ->appendMultiple($document1, $otherDocuments);
+
+        $document = new Document($this);
+        $document->setFile($outputFile);
+
+        return $document;
+    }
+
+    public function layer(DocumentInterface $foreground, DocumentInterface $background)
+    {
+        $outputContents = $this->findManipulator($foreground->getType(), 'layer')
+            ->layer($foreground, $background);
+
+        $document = new Document($this);
+        $document->setContents($outputContents);
+
+        return $document;
+    }
 }

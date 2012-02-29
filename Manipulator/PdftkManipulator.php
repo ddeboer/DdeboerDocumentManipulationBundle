@@ -20,7 +20,9 @@ class PdftkManipulator implements ManipulatorInterface
     public function supports($type, $operation)
     {
         return in_array($type, array('pdf'))
-            && in_array($operation, array('append', 'prepend'));
+            && in_array($operation, array(
+                'append', 'appendMultiple',
+                'prepend', 'layer'));
     }
 
     public function append(DocumentInterface $document1, DocumentInterface $document2)
@@ -58,5 +60,28 @@ class PdftkManipulator implements ManipulatorInterface
 //        echo $content;die;
 //
 //        return $content;
+    }
+
+    public function appendMultiple(DocumentInterface $document, array $documents)
+    {
+        $files = array(
+            $document->getFile()->getPathname()
+        );
+
+        foreach ($documents as $document) {
+            $files[] = $document->getFile()->getPathname();
+        }
+
+        $outputFile = $this->pdftk->merge($files);
+        return new File($outputFile);
+    }
+
+    public function layer(DocumentInterface $foreground, DocumentInterface $background)
+    {
+        $filename = $this->pdftk->background(
+            $foreground->getFile()->getPathname(),
+            $background->getFile()->getPathname()
+        );
+        return file_get_contents($filename);
     }
 }

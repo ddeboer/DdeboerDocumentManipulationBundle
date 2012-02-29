@@ -109,12 +109,12 @@ class Document implements DocumentInterface
 
     public function isDoc()
     {
-        return self::TYPE_DOC === $this->getType();
+        return DocumentInterface::TYPE_DOC === $this->getType();
     }
 
     public function isPdf()
     {
-        return self::TYPE_PDF === $this->getType();
+        return DocumentInterface::TYPE_PDF === $this->getType();
     }
 
     /**
@@ -135,7 +135,7 @@ class Document implements DocumentInterface
     /**
      * @return DocumentInterface
      */
-    function merge(DocumentDataInterface $data)
+    public function merge(DocumentDataInterface $data)
     {
         return $this->manipulators->merge($this, $data);
     }
@@ -157,7 +157,7 @@ class Document implements DocumentInterface
      */
     function appendMultiple(array $documents)
     {
-
+        return $this->manipulators->appendMultiple($this, $documents);
     }
 
     /**
@@ -204,9 +204,9 @@ class Document implements DocumentInterface
      * @return DocumentInterface $background
      * @param DocumentInterface $document   The background document
      */
-    function putInFront(self $background)
+    public function putInFront(self $background)
     {
-
+        return $this->manipulators->layer($this, $background);
     }
 
     /**
@@ -222,8 +222,13 @@ class Document implements DocumentInterface
 
     protected function createTempfile()
     {
-        $filename = tempnam('/tmp', 'doc_');
-        return $filename;
-    }
+        $name = md5(microtime());
 
+        // Add file extension, if available
+        if ($this->getType()) {
+            $name .= '.' . $this->getType();
+        }
+
+        return sys_get_temp_dir() . '/' . $name;
+    }
 }
