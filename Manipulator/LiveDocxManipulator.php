@@ -38,7 +38,7 @@ class LiveDocxManipulator implements ManipulatorInterface
         copy($file->getPathname(), $tmpFile);
 
         // Make sure file doesn't become writable only by www-data
-        @chmod($target, 0666 & ~umask());
+        @chmod($tmpFile, 0666 & ~umask());
 
         // Upload local template to server if it hasn't been uploaded yet
         if (!$this->liveDocx->templateExists($hash)) {
