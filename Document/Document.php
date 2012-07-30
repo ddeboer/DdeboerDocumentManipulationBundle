@@ -1,10 +1,13 @@
 <?php
 
-namespace Ddeboer\DocumentManipulationBundle;
+namespace Ddeboer\DocumentManipulationBundle\Document;
 
 use Symfony\Component\HttpFoundation\File\File;
-use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorCollection;
+use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorChain;
 
+/**
+ * {@inheritdoc}
+*/
 class Document implements DocumentInterface
 {
     /**
@@ -15,8 +18,15 @@ class Document implements DocumentInterface
     protected $contents;
 
     protected $type;
-    
-    public function __construct(ManipulatorCollection $manipulators)
+
+    /**
+     * Constructor
+     *
+     * For easy construction, use the DocumentFactory.
+     *
+     * @param ManipulatorChain $manipulators Chain of manipulators
+     */
+    public function __construct(ManipulatorChain $manipulators)
     {
         $this->manipulators = $manipulators;
     }
@@ -24,10 +34,10 @@ class Document implements DocumentInterface
     public function setFile(File $file)
     {
         switch ($file->getMimeType()) {
-            case 'application/pdf':                
+            case 'application/pdf':
                 $this->file = $file;
                 $this->setType(DocumentInterface::TYPE_PDF);
-                return $this;                
+                return $this;
             case 'application/msword':
                 $this->file = $file;
                 $this->setType(DocumentInterface::TYPE_DOC);
@@ -133,17 +143,15 @@ class Document implements DocumentInterface
     }
 
     /**
-     * @return DocumentInterface
+     * {@inheritdoc}
      */
-    public function merge(DocumentDataInterface $data)
+    public function merge(DocumentData $data)
     {
         return $this->manipulators->merge($this, $data);
     }
 
     /**
-     * Append another document to this document
-     *
-     * @return DocumentInterface
+     * {@inheritdoc}
      */
     public function append(DocumentInterface $document)
     {
@@ -151,11 +159,9 @@ class Document implements DocumentInterface
     }
 
     /**
-     * Append multiple documents to this document
-     *
-     * @return DocumentInterface
+     * {@inheritdoc}
      */
-    function appendMultiple(array $documents)
+    public function appendMultiple(array $documents)
     {
         return $this->manipulators->appendMultiple($this, $documents);
     }
@@ -165,44 +171,37 @@ class Document implements DocumentInterface
      *
      * @return DocumentInterface
      */
-    function appendTo(self $document)
+    public function appendTo(self $document)
     {
-
+        throw new \Exception('Not yet implemented');
     }
 
     /**
-     * Prepend another document to this document
-     *
-     * @return DocumentInterface
+     * {@inheritdoc}
      */
-    function prepend(self $document)
+    public function prepend(self $document)
     {
-
+        throw new \Exception('Not yet implemented');
     }
 
     /**
-     * Prepend multiple documents to this document
+     * {@inheritdoc}
      */
-    function prependMultiple(array $documents)
+    public function prependMultiple(array $documents)
     {
-
+        throw new \Exception('Not yet implemented');
     }
 
     /**
-     * Prepend this document to another document
-     *
-     * @return DocumentInterface
+     * {@inheritdoc}
      */
-    function prependTo(self $document)
+    public function prependTo(self $document)
     {
-
+        throw new \Exception('Not yet implemented');
     }
 
     /**
-     * Put this document in front of another document
-     *
-     * @return DocumentInterface $background
-     * @param DocumentInterface $document   The background document
+     * {@inheritdoc}
      */
     public function putInFront(self $background)
     {
@@ -210,14 +209,11 @@ class Document implements DocumentInterface
     }
 
     /**
-     * Put this document behind another document
-     *
-     * @param DocumentInterface $foreground
-     * @return DocumentInterface
+     * {@inheritdoc}
      */
     function putBehind(self $foreground)
     {
-        
+        throw new \Exception('Not yet implemented');
     }
 
     protected function createTempfile()

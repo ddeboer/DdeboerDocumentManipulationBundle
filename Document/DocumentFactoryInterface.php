@@ -1,6 +1,6 @@
 <?php
 
-namespace Ddeboer\DocumentManipulationBundle;
+namespace Ddeboer\DocumentManipulationBundle\Document;
 
 use Ddeboer\DocumentManipulationBundle\DocumentInterface;
 

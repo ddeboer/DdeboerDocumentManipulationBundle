@@ -1,15 +1,24 @@
 <?php
 
-namespace Ddeboer\DocumentManipulationBundle;
+namespace Ddeboer\DocumentManipulationBundle\Document;
 
 use Symfony\Component\HttpFoundation\File\File;
-use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorCollection;
+use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorChain;
 
+/**
+ * Creates a document and passes the manipulator chain to it
+ *
+ */
 class DocumentFactory implements DocumentFactoryInterface
 {
     protected $manipulators = array();
 
-    public function __construct(ManipulatorCollection $manipulators)
+    /**
+     * Constructor
+     *
+     * @param ManipulatorChain $manipulators Manipulator chain
+     */
+    public function __construct(ManipulatorChain $manipulators)
     {
         $this->manipulators = $manipulators;
     }
@@ -22,6 +31,7 @@ class DocumentFactory implements DocumentFactoryInterface
         $file = new File($filename);
         $document = new Document($this->manipulators);
         $document->setFile($file);
+
         return $document;
     }
 
@@ -35,19 +45,7 @@ class DocumentFactory implements DocumentFactoryInterface
         if ($type) {
             $document->setType($type);
         }
+
         return $document;
-    }
-
-    /**
-     * @return string Filename
-     */
-    protected function createTempfile($contents = null)
-    {
-        $filename = tempnam('/tmp', 'doc_');
-        if ($contents) {
-            file_put_contents($filename, $contents);
-        }
-
-        return $filename;
     }
 }

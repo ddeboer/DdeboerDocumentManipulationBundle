@@ -1,13 +1,11 @@
 <?php
 
-namespace Ddeboer\DocumentManipulationBundle;
-
-use Doctrine\Common\Collections\ArrayCollection;
+namespace Ddeboer\DocumentManipulationBundle\Document;
 
 /**
- * Context value collection
+ * A collection of key/value pairs that contains mail merge
  */
-class DocumentData implements \IteratorAggregate, \Countable, \ArrayAccess, DocumentDataInterface
+class DocumentData implements \IteratorAggregate, \Countable, \ArrayAccess
 {
     protected $values = array();
 
