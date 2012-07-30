@@ -54,7 +54,7 @@ interface DocumentInterface
      *
      * @return DocumentInterface
      */
-    function appendTo(self $document);
+    function appendTo(DocumentInterface $document);
 
     /**
      * Prepend another document to this document
@@ -63,7 +63,7 @@ interface DocumentInterface
      *
      * @return DocumentInterface
      */
-    function prepend(self $document);
+    function prepend(DocumentInterface $document);
 
     /**
      * Prepend multiple documents to this document
@@ -80,7 +80,7 @@ interface DocumentInterface
      *
      * @return DocumentInterface
      */
-    function prependTo(self $document);
+    function prependTo(DocumentInterface $document);
 
     /**
      * Put this document in front of another document
@@ -89,7 +89,7 @@ interface DocumentInterface
      *
      * @return DocumentInterface $background
      */
-    function putInFront(self $background);
+    function putInFront(DocumentInterface $background);
 
     /**
      * Put this document behind another document
@@ -98,5 +98,5 @@ interface DocumentInterface
      *
      * @return DocumentInterface
      */
-    function putBehind(self $foreground);
+    function putBehind(DocumentInterface $foreground);
 }

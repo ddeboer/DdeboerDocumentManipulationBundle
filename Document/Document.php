@@ -171,7 +171,7 @@ class Document implements DocumentInterface
      *
      * @return DocumentInterface
      */
-    public function appendTo(self $document)
+    public function appendTo(DocumentInterface $document)
     {
         throw new \Exception('Not yet implemented');
     }
@@ -179,7 +179,7 @@ class Document implements DocumentInterface
     /**
      * {@inheritdoc}
      */
-    public function prepend(self $document)
+    public function prepend(DocumentInterface $document)
     {
         throw new \Exception('Not yet implemented');
     }
@@ -195,7 +195,7 @@ class Document implements DocumentInterface
     /**
      * {@inheritdoc}
      */
-    public function prependTo(self $document)
+    public function prependTo(DocumentInterface $document)
     {
         throw new \Exception('Not yet implemented');
     }
@@ -203,7 +203,7 @@ class Document implements DocumentInterface
     /**
      * {@inheritdoc}
      */
-    public function putInFront(self $background)
+    public function putInFront(DocumentInterface $background)
     {
         return $this->manipulators->layer($this, $background);
     }
@@ -211,7 +211,7 @@ class Document implements DocumentInterface
     /**
      * {@inheritdoc}
      */
-    function putBehind(self $foreground)
+    function putBehind(DocumentInterface $foreground)
     {
         throw new \Exception('Not yet implemented');
     }
