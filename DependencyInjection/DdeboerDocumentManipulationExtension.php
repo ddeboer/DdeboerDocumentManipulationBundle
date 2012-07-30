@@ -29,7 +29,7 @@ class DdeboerDocumentManipulationExtension extends Extension
 
         $container->setParameter(
             'ddeboer_document_manipulation.pdftk.binary',
-             $config['pdftk']['binary']
+            $config['pdftk']['binary']
         );
 
         if (isset($config['livedocx'])) {
@@ -38,7 +38,7 @@ class DdeboerDocumentManipulationExtension extends Extension
                 'ddeboer_document.manipulation.manipulator.live_docx.mail_merge',
                 $liveDocx
             );
-            
+
             $container
                 ->getDefinition('ddeboer_document_manipulation.manipulator.live_docx')
                 ->setAbstract(false)

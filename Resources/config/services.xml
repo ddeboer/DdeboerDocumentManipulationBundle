@@ -4,19 +4,23 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="ddeboer_document_manipulation.manipulator.live_docx.class">Ddeboer\DocumentManipulationBundle\Manipulator\LiveDocxManipulator</parameter>
+    </parameters>
+
     <services>
 
         <service id="ddeboer_document_manipulation.factory"
-                 class="Ddeboer\DocumentManipulationBundle\DocumentFactory">
-            <argument type="service" id="ddeboer_document_manipulation.manipulator_collection" />
+                 class="Ddeboer\DocumentManipulationBundle\Document\DocumentFactory">
+            <argument type="service" id="ddeboer_document_manipulation.manipulator_chain" />
         </service>
 
-        <service id="ddeboer_document_manipulation.manipulator_collection"
-                 class="Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorCollection">
+        <service id="ddeboer_document_manipulation.manipulator_chain"
+                 class="Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorChain">
         </service>
 
         <service id="ddeboer_document_manipulation.manipulator.live_docx"
-                 class="Ddeboer\DocumentManipulationBundle\Manipulator\LiveDocxManipulator"
+                 class="%ddeboer_document_manipulation.manipulator.live_docx.class%"
                  abstract="true">
             <tag name="ddeboer_document_manipulation.manipulator" />
         </service>

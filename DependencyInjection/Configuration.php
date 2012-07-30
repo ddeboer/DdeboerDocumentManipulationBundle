@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('username')->isRequired()->end()
                         ->scalarNode('password')->isRequired()->end()
-                        ->scalarNode('wsdl')->defaultValue('https://api.livedocx.com/2.0/mailmerge.asmx?wsdl')->end()
+                        ->scalarNode('wsdl')->defaultValue('https://api.livedocx.com/2.1/mailmerge.asmx?wsdl')->end()
                     ->end()
                 ->end()
                 ->arrayNode('pdftk')
@@ -36,7 +36,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end();
-        
+
         return $treeBuilder;
     }
 }
