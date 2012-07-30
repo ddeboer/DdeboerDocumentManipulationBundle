@@ -2,11 +2,11 @@
 
 namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 
-use Ddeboer\DocumentManipulationBundle\DocumentInterface;
-use Ddeboer\DocumentManipulationBundle\DocumentDataInterface;
-use Ddeboer\DocumentManipulationBundle\ManipulatorInterface;
+use Ddeboer\DocumentManipulationBundle\Document\DocumentInterface;
+use Ddeboer\DocumentManipulationBundle\Document\DocumentData;
+use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorInterface;
 use Symfony\Component\HttpFoundation\File\File;
-use Zend\Service\LiveDocx\MailMerge;
+use ZendService\LiveDocx\MailMerge;
 
 /**
  * A manipulator that uses the LiveDocx web service to merge and convert
@@ -18,6 +18,11 @@ class LiveDocxManipulator implements ManipulatorInterface
 {
     protected $liveDocx;
 
+    /**
+     * Constructor
+     *
+     * @param MailMerge $liveDocx ZendService Mailmerge
+     */
     public function __construct(MailMerge $liveDocx)
     {
         $this->liveDocx = $liveDocx;
@@ -28,6 +33,16 @@ class LiveDocxManipulator implements ManipulatorInterface
      * @param DocumentDataInterface $data
      * @param type $format
      * @return type
+     */
+
+    /**
+     * Mail merge a file
+     *
+     * @param File         $file   Symfony2 file object
+     * @param \Traversable $data   Mail merge data
+     * @param string       $format Output file format
+     *
+     * @return string File contents
      */
     public function merge(File $file, \Traversable $data, $format = 'pdf')
     {
@@ -53,6 +68,7 @@ class LiveDocxManipulator implements ManipulatorInterface
 
         $this->liveDocx->createDocument();
         $contents = $this->liveDocx->retrieveDocument($format);
+
         return $contents;
     }
 

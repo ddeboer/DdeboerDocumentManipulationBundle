@@ -2,27 +2,37 @@
 
 namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 
-use Ddeboer\DocumentManipulationBundle\ManipulatorInterface;
-use Ddeboer\DocumentManipulationBundle\Document;
-use Ddeboer\DocumentManipulationBundle\DocumentInterface;
+use Ddeboer\DocumentManipulationBundle\Document\DocumentInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Ddeboer\DocumentManipulationBundle\Manipulator\PdftkManipulator\Pdftk;
 
+/**
+ * Manipulates PDF documents with pdftk
+ *
+ */
 class PdftkManipulator implements ManipulatorInterface
 {
     protected $pdftk;
 
+    /**
+     * Constructor
+     *
+     * @param Pdftk $pdftk
+     */
     public function __construct(Pdftk $pdftk)
     {
         $this->pdftk = $pdftk;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function supports($type, $operation)
     {
         return in_array($type, array('pdf'))
             && in_array($operation, array(
                 'append', 'appendMultiple',
-                'prepend', 'layer'));
+                'prepend'));
     }
 
     public function append(DocumentInterface $document1, DocumentInterface $document2)
@@ -33,33 +43,8 @@ class PdftkManipulator implements ManipulatorInterface
         );
 
         $outputFile = $this->pdftk->merge($files);
-        return new File($outputFile);
-        
 
-//        $cmd = "pdftk - output -";
-//        $descriptorspec = array(
-//            0 => array('pipe', 'r'),
-////            1 => array('pipe', 'r'),
-//            1 => array("pipe", 'w')
-//        );
-//
-//        $process = proc_open($cmd, $descriptorspec, $pipes);
-//
-//        if (is_resource($process)) {
-//            fwrite($pipes[0], $document1->getContents());
-//            fwrite($pipes[0], $document2->getContents());
-////            fwrite($pipes[1], $document2->getContents());
-//            fclose($pipes[0]);
-////            fclose($pipes[1]);
-//            $content = stream_get_contents($pipes[1]);
-//            fclose($pipes[1]);
-//        }
-//        file_put_contents('/tmp/output3.pdf', $content);
-//
-//
-//        echo $content;die;
-//
-//        return $content;
+        return new File($outputFile);
     }
 
     public function appendMultiple(DocumentInterface $document, array $documents)
@@ -82,6 +67,7 @@ class PdftkManipulator implements ManipulatorInterface
             $foreground->getFile()->getPathname(),
             $background->getFile()->getPathname()
         );
+
         return file_get_contents($filename);
     }
 }
