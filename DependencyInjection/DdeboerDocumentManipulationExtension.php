@@ -33,12 +33,7 @@ class DdeboerDocumentManipulationExtension extends Extension
         );
 
         if (isset($config['livedocx'])) {
-            $liveDocx = $this->addLiveDocx($config['livedocx']);
-            $container->setDefinition(
-                'ddeboer_document.manipulation.manipulator.live_docx.mail_merge',
-                $liveDocx
-            );
-
+            $this->addLiveDocx($config['livedocx'], $container);
             $container
                 ->getDefinition('ddeboer_document_manipulation.manipulator.live_docx')
                 ->setAbstract(false)
@@ -46,9 +41,10 @@ class DdeboerDocumentManipulationExtension extends Extension
         }
     }
 
-    private function addLiveDocx(array $config)
+    private function addLiveDocx(array $config, ContainerBuilder $container)
     {
-        $definition = new Definition('Zend\Service\LiveDocx\MailMerge');
+        $definition = $container->getDefinition('ddeboer_document.manipulation.manipulator.live_docx.mail_merge');
+        $definition->setAbstract(false);
         $definition->addMethodCall('setUsername', array($config['username']));
         $definition->addMethodCall('setPassword', array($config['password']));
         $definition->addMethodCall('setWsdl', array($config['wsdl']));

@@ -22,6 +22,7 @@
         <service id="ddeboer_document_manipulation.manipulator.live_docx"
                  class="%ddeboer_document_manipulation.manipulator.live_docx.class%"
                  abstract="true">
+            <argument type="service" id="ddeboer_document.manipulation.manipulator.live_docx.mail_merge" />
             <tag name="ddeboer_document_manipulation.manipulator" />
         </service>
 
@@ -34,6 +35,11 @@
         <service id="ddeboer_document_manipulation.pdftk"
                  class="Ddeboer\DocumentManipulationBundle\Manipulator\PdftkManipulator\Pdftk">
             <argument>%ddeboer_document_manipulation.pdftk.binary%</argument>
+        </service>
+
+        <service id="ddeboer_document.manipulation.manipulator.live_docx.mail_merge"
+                 class="ZendService\LiveDocx\MailMerge"
+                 abstract="true">
         </service>
 
     </services>

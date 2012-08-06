@@ -14,9 +14,16 @@
     "require": {
         "php": ">=5.3.0"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://packages.zendframework.com/"
+        }
+    ],
     "require-dev": {
         "symfony/symfony": "2.1.0-beta4",
-        "symfony/framework-bundle": "@dev"
+        "symfony/framework-bundle": "@dev",
+        "zendframework/zendservice-livedocx": "2.0.0rc2@dev"
     },
     "suggest": {
         "zendframework/zendservice-livedocx": "If you have a LiveDocx account and want to use mail merging"
@@ -24,5 +31,6 @@
     "autoload": {
         "psr-0": { "Ddeboer\\DocumentManipulationBundle": "" }
     },
-    "target-dir": "Ddeboer/DocumentManipulationBundle"
+    "target-dir": "Ddeboer/DocumentManipulationBundle",
+    "minimum-stability": "dev"
 }
