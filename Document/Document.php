@@ -42,7 +42,6 @@ class Document implements DocumentInterface
                 $this->file = $file;
                 $this->setType(DocumentInterface::TYPE_DOC);
                 return $this;
-
             default:
                 break;
         }
@@ -52,7 +51,6 @@ class Document implements DocumentInterface
                 $this->file = $file;
                 $this->setType(DocumentInterface::TYPE_DOCX);
                 return $this;
-
             default:
                 break;
         }
@@ -211,7 +209,7 @@ class Document implements DocumentInterface
     /**
      * {@inheritdoc}
      */
-    function putBehind(DocumentInterface $foreground)
+    public function putBehind(DocumentInterface $foreground)
     {
         throw new \Exception('Not yet implemented');
     }
