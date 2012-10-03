@@ -2,8 +2,8 @@
 
 namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 
-use Ddeboer\DocumentManipulationBundle\Document\DocumentInterface,
-    Ddeboer\DocumentManipulationBundle\Document\DocumentData;
+use Ddeboer\DocumentManipulationBundle\Document\DocumentInterface;
+use Ddeboer\DocumentManipulationBundle\Document\DocumentData;
 
 /**
  * A chain of manipulators
@@ -52,13 +52,18 @@ class ManipulatorChain
      */
     public function findManipulator($type, $operation)
     {
-        $filtered = array_filter($this->manipulators, function($manipulator) use ($type, $operation) {
-            return $manipulator->supports($type, $operation);
-        });
+        $filtered = array_filter(
+            $this->manipulators,
+            function($manipulator) use ($type, $operation) {
+                return $manipulator->supports($type, $operation);
+            }
+        );
 
         if (0 === count($filtered)) {
-            throw new \Exception('No manipulator found for type ' . $type
-                . ' and operation ' . $operation);
+            throw new \Exception(
+                'No manipulator found for type ' . $type
+                . ' and operation ' . $operation
+            );
         }
 
         // For now, just return the first compatible manipulator that we find
@@ -133,3 +138,4 @@ class ManipulatorChain
         return $document;
     }
 }
+
