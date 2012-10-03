@@ -2,8 +2,6 @@
 
 namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 
-use Ddeboer\DocumentManipulationBundle\Document\DocumentInterface;
-use Ddeboer\DocumentManipulationBundle\Document\DocumentData;
 use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use ZendService\LiveDocx\MailMerge;
@@ -27,13 +25,6 @@ class LiveDocxManipulator implements ManipulatorInterface
     {
         $this->liveDocx = $liveDocx;
     }
-
-    /**
-     * @param DocumentInterface $document
-     * @param DocumentDataInterface $data
-     * @param type $format
-     * @return type
-     */
 
     /**
      * Mail merge a file
