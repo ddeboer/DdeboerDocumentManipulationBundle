@@ -99,4 +99,11 @@ interface DocumentInterface
      * @return DocumentInterface
      */
     function putBehind(DocumentInterface $foreground);
+
+    /**
+     * Get document type
+     *
+     * @return string
+     */
+    function getType();
 }

@@ -4,6 +4,7 @@ namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 
 use Ddeboer\DocumentManipulationBundle\Document\DocumentInterface;
 use Ddeboer\DocumentManipulationBundle\Document\DocumentData;
+use Ddeboer\DocumentManipulationBundle\Document\Document;
 
 /**
  * A chain of manipulators
