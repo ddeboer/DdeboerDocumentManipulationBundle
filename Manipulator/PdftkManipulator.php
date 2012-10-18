@@ -14,6 +14,13 @@ class PdftkManipulator implements ManipulatorInterface
 {
     protected $pdftk;
 
+    protected $supportedOperations = array(
+        'append',
+        'appendMultiple',
+        'prepend',
+        'layer'
+    );
+
     /**
      * Constructor
      *
@@ -30,9 +37,7 @@ class PdftkManipulator implements ManipulatorInterface
     public function supports($type, $operation)
     {
         return in_array($type, array('pdf'))
-            && in_array($operation, array(
-                'append', 'appendMultiple',
-                'prepend'));
+            && in_array($operation, $this->supportedOperations);
     }
 
     public function append(DocumentInterface $document1, DocumentInterface $document2)
