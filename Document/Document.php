@@ -137,7 +137,6 @@ class Document implements DocumentInterface
 
         file_put_contents($filename, $this->getContents());
         $this->setFile(new File($filename));
-        die('ok');
 
         return $this;
     }
