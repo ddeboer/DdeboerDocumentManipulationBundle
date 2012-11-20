@@ -87,7 +87,6 @@ class Document implements DocumentInterface
 
         // Guess type from contents
         $finfo = new \finfo(\FILEINFO_MIME);
-        $finfo->buffer($contents);
         if (1 === preg_match('/^(.*);/', $finfo->buffer($contents), $matches)) {
             switch ($matches[1]) {
                 case 'application/pdf':
@@ -138,6 +137,7 @@ class Document implements DocumentInterface
 
         file_put_contents($filename, $this->getContents());
         $this->setFile(new File($filename));
+        die('ok');
 
         return $this;
     }
