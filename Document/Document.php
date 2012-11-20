@@ -33,23 +33,25 @@ class Document implements DocumentInterface
 
     public function setFile(File $file)
     {
+        $this->file = $file;
+
+        // First try to guess by extension, because MIME type is not guessed
+        // correctly for .docx files using $file->getMimeType()
+        switch ($file->getExtension()) {
+            case 'docx':
+                $this->setType(DocumentInterface::TYPE_DOCX);
+                return $this;
+            default:
+
+        }
+
         switch ($file->getMimeType()) {
             case 'application/pdf':
-                $this->file = $file;
                 $this->setType(DocumentInterface::TYPE_PDF);
                 return $this;
             case 'application/msword':
                 $this->file = $file;
                 $this->setType(DocumentInterface::TYPE_DOC);
-                return $this;
-            default:
-                break;
-        }
-
-        switch ($file->getExtension()) {
-            case 'docx':
-                $this->file = $file;
-                $this->setType(DocumentInterface::TYPE_DOCX);
                 return $this;
             default:
                 break;
