@@ -35,7 +35,7 @@ by adding the following to your `composer.json`:
         ...
     ],
     "require": {
-        "zendframework/zendservice-livedocx": "2.0.0rc1@dev",
+        "zendframework/zendservice-livedocx": "@stable",
     }
 
 ```
