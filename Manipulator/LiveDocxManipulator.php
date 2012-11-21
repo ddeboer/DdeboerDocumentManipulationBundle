@@ -37,17 +37,18 @@ class LiveDocxManipulator implements ManipulatorInterface
      */
     public function merge(File $file, \Traversable $data, $format = 'pdf')
     {
-        // Calculate MD5 hash for file
-        // LiveDocx seems to require a file extension
+        // Calculate MD5 hash for file.
+        // LiveDocx seems to require a file extension, so add it.
         $hash = md5_file($file->getPathname()) . '.' . $file->getExtension();
-        $tmpFile = sys_get_temp_dir() . '/' . $hash;
-        copy($file->getPathname(), $tmpFile);
-
-        // Make sure file doesn't become writable only by www-data
-        @chmod($tmpFile, 0666 & ~umask());
 
         // Upload local template to server if it hasn't been uploaded yet
         if (!$this->liveDocx->templateExists($hash)) {
+            $tmpFile = sys_get_temp_dir() . '/' . $hash;
+            copy($file->getPathname(), $tmpFile);
+            
+            // Make sure file doesn't become writable only by www-data
+            chmod($tmpFile, 0666 & ~umask());
+
             $this->liveDocx->uploadTemplate($tmpFile);
         }
 
