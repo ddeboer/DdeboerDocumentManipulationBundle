@@ -3,7 +3,7 @@
 namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 
 use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorInterface;
-use Symfony\Component\HttpFoundation\File\File;
+use Ddeboer\DocumentManipulationBundle\File\File;
 use ZendService\LiveDocx\MailMerge;
 
 /**
@@ -39,13 +39,13 @@ class LiveDocxManipulator implements ManipulatorInterface
     {
         // Calculate MD5 hash for file.
         // LiveDocx seems to require a file extension, so add it.
-        $hash = md5_file($file->getPathname()) . '.' . $file->getExtension();
+        $hash = $file->getHashFilename();
 
         // Upload local template to server if it hasn't been uploaded yet
         if (!$this->liveDocx->templateExists($hash)) {
             $tmpFile = sys_get_temp_dir() . '/' . $hash;
             copy($file->getPathname(), $tmpFile);
-            
+
             // Make sure file doesn't become writable only by www-data
             chmod($tmpFile, 0666 & ~umask());
 
@@ -55,7 +55,21 @@ class LiveDocxManipulator implements ManipulatorInterface
         $this->liveDocx->setRemoteTemplate($hash);
 
         foreach ($data as $field => $value) {
-            $this->liveDocx->assign($field, $value);
+            if ($value instanceof File) {
+                // Image merge field
+                $filename = $value->getHashFilename();
+                if (!$this->liveDocx->imageExists($filename)) {
+                    $file = $value->getFile();
+                    $tmpFile = \sys_get_temp_dir() . '/' . $filename;
+                    \copy($file->getPathname(), $tmpFile);
+                    $this->liveDocx->uploadImage($tmpFile);
+                }
+
+                $this->liveDocx->assign($field, $filename);
+            } else {
+                // Plain merge field
+                $this->liveDocx->assign($field, $value);
+            }
         }
 
         $this->liveDocx->createDocument();
