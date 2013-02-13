@@ -38,6 +38,7 @@ class File extends SymfonyFile
     {
         // Try to determine file extension
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $extension = null;
         switch ($finfo->buffer($string)) {
             case 'application/pdf':
                 $extension = '.pdf';
