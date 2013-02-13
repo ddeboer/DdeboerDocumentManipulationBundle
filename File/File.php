@@ -36,7 +36,29 @@ class File extends SymfonyFile
      */
     public static function fromString($string)
     {
-        $filename = sys_get_temp_dir() . '/' . md5($string);
+        // Try to determine file extension
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        switch ($finfo->buffer($string)) {
+            case 'application/pdf':
+                $extension = '.pdf';
+                break;
+
+            case 'application/msword':
+                $finfo2 = new \finfo();
+                $info = $finfo2->buffer($string);
+                switch ($info) {
+                    case 'Microsoft Office Document Microsoft Word Document':
+                        $extension = '.doc';
+                        break;
+
+                    case 'Microsoft Word 2007+':
+                    default:
+                        $extension = '.docx';
+                        break;
+                }
+        }
+
+        $filename = sys_get_temp_dir() . '/' . md5($string) . $extension;
         file_put_contents($filename, $string);
 
         return new self($filename);
