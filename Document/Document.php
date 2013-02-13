@@ -162,16 +162,4 @@ class Document implements DocumentInterface
     {
         throw new \Exception('Not yet implemented');
     }
-
-    protected function createTempfile()
-    {
-        $name = md5(microtime());
-
-        // Add file extension, if available
-        if ($this->getType()) {
-            $name .= '.' . $this->getType();
-        }
-
-        return sys_get_temp_dir() . '/' . $name;
-    }
 }
