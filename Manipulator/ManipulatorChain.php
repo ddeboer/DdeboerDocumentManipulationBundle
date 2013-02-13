@@ -5,6 +5,7 @@ namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 use Ddeboer\DocumentManipulationBundle\Document\DocumentInterface;
 use Ddeboer\DocumentManipulationBundle\Document\DocumentData;
 use Ddeboer\DocumentManipulationBundle\Document\Document;
+use Ddeboer\DocumentManipulationBundle\File\File;
 
 /**
  * A chain of manipulators
@@ -84,11 +85,7 @@ class ManipulatorChain
         $contents = $this->findManipulator($document->getType(), 'merge')
             ->merge($document->getFile(), $data);
 
-        $document = new Document($this);
-        $document->setContents($contents);
-        $document->setType(DocumentInterface::TYPE_PDF);
-
-        return $document;
+        return new Document($this, File::fromString($contents));
     }
 
     /**
@@ -103,10 +100,7 @@ class ManipulatorChain
         $outputFile = $this->findManipulator($document1->getType(), 'append')
             ->append($document1, $document2);
 
-        $document = new Document($this);
-        $document->setFile($outputFile);
-
-        return $document;
+        return new Document($this, File::fromFilename($outputFile));
     }
 
     /**
@@ -122,10 +116,7 @@ class ManipulatorChain
         $outputFile = $this->findManipulator($document->getType(), 'appendMultiple')
             ->appendMultiple($document, $otherDocuments);
 
-        $document = new Document($this);
-        $document->setFile($outputFile);
-
-        return $document;
+        return new Document($this, File::fromFilename($outputFile));
     }
 
     public function layer(DocumentInterface $foreground, DocumentInterface $background)
@@ -133,10 +124,7 @@ class ManipulatorChain
         $outputContents = $this->findManipulator($foreground->getType(), 'layer')
             ->layer($foreground, $background);
 
-        $document = new Document($this);
-        $document->setContents($outputContents);
-
-        return $document;
+        return new Document($this, File::fromString($outputContents));
     }
 }
 

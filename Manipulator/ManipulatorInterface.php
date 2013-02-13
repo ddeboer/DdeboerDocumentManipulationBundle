@@ -4,6 +4,8 @@ namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 
 /**
  * Manipulates documents
+ *
+ * A manipulator should not know about documents and images; only about files.
  */
 interface ManipulatorInterface
 {

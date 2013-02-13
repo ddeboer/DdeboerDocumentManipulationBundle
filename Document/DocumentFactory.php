@@ -2,7 +2,7 @@
 
 namespace Ddeboer\DocumentManipulationBundle\Document;
 
-use Symfony\Component\HttpFoundation\File\File;
+use Ddeboer\DocumentManipulationBundle\File\File;
 use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorChain;
 
 /**
@@ -28,11 +28,7 @@ class DocumentFactory implements DocumentFactoryInterface
      */
     public function open($filename)
     {
-        $file = new File($filename);
-        $document = new Document($this->manipulators);
-        $document->setFile($file);
-
-        return $document;
+        return new Document($this->manipulators, File::fromFilename($filename));
     }
 
     /**
@@ -40,12 +36,6 @@ class DocumentFactory implements DocumentFactoryInterface
      */
     public function load($string, $type = null)
     {
-        $document = new Document($this->manipulators);
-        $document->setContents($string);
-        if ($type) {
-            $document->setType($type);
-        }
-
-        return $document;
+        return new Document($this->manipulators, File::fromString($string));
     }
 }

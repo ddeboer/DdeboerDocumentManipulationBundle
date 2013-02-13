@@ -2,21 +2,14 @@
 
 namespace Ddeboer\DocumentManipulationBundle\Document;
 
-use Symfony\Component\HttpFoundation\File\File;
 use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorChain;
+use Ddeboer\DocumentManipulationBundle\File\File;
 
 /**
  * {@inheritdoc}
 */
 class Document implements DocumentInterface
 {
-    /**
-     * @var File
-     */
-    protected $file;
-
-    protected $contents;
-
     protected $type;
 
     /**
@@ -25,80 +18,21 @@ class Document implements DocumentInterface
      * For easy construction, use the DocumentFactory.
      *
      * @param ManipulatorChain $manipulators Chain of manipulators
+     * @param File             $file         File
      */
-    public function __construct(ManipulatorChain $manipulators)
+    public function __construct(ManipulatorChain $manipulators, File $file)
     {
         $this->manipulators = $manipulators;
-    }
-
-    public function setFile(File $file)
-    {
         $this->file = $file;
-
-        // First try to guess by extension, because MIME type is not guessed
-        // correctly for .docx files using $file->getMimeType()
-        switch ($file->getExtension()) {
-            case 'docx':
-                $this->setType(DocumentInterface::TYPE_DOCX);
-                return $this;
-            default:
-
-        }
-
-        switch ($file->getMimeType()) {
-            case 'application/pdf':
-                $this->setType(DocumentInterface::TYPE_PDF);
-                return $this;
-            case 'application/msword':
-                $this->file = $file;
-                $this->setType(DocumentInterface::TYPE_DOC);
-                return $this;
-            default:
-                break;
-        }
     }
 
     /**
-     * @return \SplFileObject
+     *
+     * @return File
      */
     public function getFile()
     {
-        if (null === $this->file && $this->contents) {
-            $filename = $this->createTempfile();
-            file_put_contents($filename, $this->contents);
-            $this->file = new File($filename);
-        }
-
         return $this->file;
-    }
-
-    public function getContents()
-    {
-        if (!$this->contents && $this->file) {
-            $this->contents = file_get_contents($this->file->getPathname());
-        }
-
-        return $this->contents;
-    }
-
-    public function setContents($contents)
-    {
-        $this->contents = $contents;
-
-        // Guess type from contents
-        $finfo = new \finfo(\FILEINFO_MIME);
-        if (1 === preg_match('/^(.*);/', $finfo->buffer($contents), $matches)) {
-            switch ($matches[1]) {
-                case 'application/pdf':
-                    $this->setType(DocumentInterface::TYPE_PDF);
-                    return;
-                case 'application/msword':
-                    $this->setType(DocumentInterface::TYPE_DOC);
-                    return;
-                default:
-                    $this->setType(DocumentInterface::TYPE_DOCX);
-            }
-        }
     }
 
     public function setType($type)
@@ -106,8 +40,25 @@ class Document implements DocumentInterface
         $this->type = $type;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getType()
     {
+        switch ($this->file->getMimeType()) {
+            case 'application/pdf':
+                return self::TYPE_PDF;
+
+            case 'application/msword':
+                if ('docx' == $this->file->getExtension()) {
+                    return self::TYPE_DOCX;
+                }
+                return self::TYPE_DOC;
+
+            default:
+                break;
+        }
+
         return $this->type;
     }
 
@@ -132,13 +83,10 @@ class Document implements DocumentInterface
     public function save($filename = null)
     {
         if (!$filename) {
-            $filename = $this->createTempfile();
+            return $this->move(sys_get_temp_dir());
+        } else {
+            return $this->move(\dirname($filename), \basename($filename));
         }
-
-        file_put_contents($filename, $this->getContents());
-        $this->setFile(new File($filename));
-
-        return $this;
     }
 
     /**
