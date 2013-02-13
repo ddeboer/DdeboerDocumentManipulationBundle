@@ -38,7 +38,8 @@ class LiveDocxManipulator implements ManipulatorInterface
     public function merge(File $file, \Traversable $data, $format = 'pdf')
     {
         // Calculate MD5 hash for file.
-        // LiveDocx seems to require a file extension, so add it.
+        // LiveDocx requires a file extension, otherwise it will return empty
+        // white pages, so upload templates with their file extension.
         $hash = $file->getHashFilename();
 
         // Upload local template to server if it hasn't been uploaded yet
