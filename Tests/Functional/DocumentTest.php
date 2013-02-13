@@ -75,7 +75,7 @@ class DocumentTest extends WebTestCase
         $document = $this->factory->open(__DIR__.'/../Fixtures/document.docx');
 
         $image = Image::fromFilename(__DIR__.'/../Fixtures/photo.jpg');
-        $data = new DocumentData();
+        $data = new DocumentData(array('Name' => 'Bond', 'FirstName' => 'James'));
         $data->set('image:Photo', $image);
 
         $document
