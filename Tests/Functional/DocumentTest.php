@@ -8,6 +8,9 @@ use Ddeboer\DocumentManipulationBundle\Document\DocumentData;
 use Ddeboer\DocumentManipulationBundle\Document\Image;
 use Ddeboer\DocumentManipulationBundle\Document\File;
 
+/**
+ * @group functional
+ */
 class DocumentTest extends WebTestCase
 {
     protected $manipulators;
