@@ -34,7 +34,7 @@ class DocumentFactory implements DocumentFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function load($string, $type = null)
+    public function load($string)
     {
         return new Document($this->manipulators, File::fromString($string));
     }
