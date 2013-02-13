@@ -1,7 +1,6 @@
 <?php
 namespace Ddeboer\DocumentManipulationBundle\Tests\Manipulator;
 
-use Ddeboer\DocumentManipulationBundle\Document\DocumentFactory;
 use Ddeboer\DocumentManipulationBundle\Document\DocumentData;
 use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorChain;
 
