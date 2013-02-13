@@ -85,4 +85,17 @@ class DocumentTest extends WebTestCase
             ->merge($data)
             ->save('/tmp/image.pdf');
     }
+
+    public function testMergeImageInDocxFromString()
+    {
+        $document = $this->factory->open(__DIR__.'/../Fixtures/document.docx');
+
+        $image = Image::fromString(\file_get_contents(__DIR__.'/../Fixtures/photo.jpg'));
+        $data = new DocumentData(array('Name' => 'Bond', 'FirstName' => 'James'));
+        $data->set('image:Photo', $image);
+
+        $document
+            ->merge($data)
+            ->save('/tmp/image-from-string.pdf');
+    }
 }

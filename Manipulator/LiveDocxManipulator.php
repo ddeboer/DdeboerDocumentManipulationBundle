@@ -60,9 +60,8 @@ class LiveDocxManipulator implements ManipulatorInterface
                 // Image merge field
                 $filename = $value->getHashFilename();
                 if (!$this->liveDocx->imageExists($filename)) {
-                    $file = $value->getFile();
                     $tmpFile = \sys_get_temp_dir() . '/' . $filename;
-                    \copy($file->getPathname(), $tmpFile);
+                    \copy($value->getPathname(), $tmpFile);
                     $this->liveDocx->uploadImage($tmpFile);
                 }
 
