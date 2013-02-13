@@ -13,6 +13,16 @@ class Document implements DocumentInterface
     protected $type;
 
     /**
+     * @var ManipulatorChain
+     */
+    protected $manipulators;
+
+    /**
+     * @var File
+     */
+    protected $file;
+
+    /**
      * Constructor
      *
      * For easy construction, use the DocumentFactory.
@@ -161,5 +171,10 @@ class Document implements DocumentInterface
     public function putBehind(DocumentInterface $foreground)
     {
         throw new \Exception('Not yet implemented');
+    }
+
+    public function getContents()
+    {
+        return $this->file->getContents();
     }
 }
