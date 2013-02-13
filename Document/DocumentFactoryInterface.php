@@ -9,6 +9,8 @@ interface DocumentFactoryInterface
     /**
      * Create a document from a file
      *
+     * @param string $filename Filename
+     *
      * @return \Ddeboer\DocumentManipulationBundle\DocumentInterface
      */
     function open($filename);
@@ -16,7 +18,9 @@ interface DocumentFactoryInterface
     /**
      * Create a document from a file body string
      *
+     * @param string $string File contents
+     *
      * @return DocumentInterface
      */
-    function load($string, $type = null);
+    function load($string);
 }
