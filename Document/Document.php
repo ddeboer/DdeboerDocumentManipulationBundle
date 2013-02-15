@@ -60,6 +60,7 @@ class Document implements DocumentInterface
                 return self::TYPE_PDF;
 
             case 'application/msword':
+            case 'application/zip':
                 if ('docx' == $this->file->getExtension()) {
                     return self::TYPE_DOCX;
                 }
@@ -74,7 +75,9 @@ class Document implements DocumentInterface
 
     public function move($directory, $filename = null)
     {
-        $this->file = $this->getFile()->move($directory, $filename);
+        $this->file = File::fromFilename($this->file->move($directory, $filename));
+
+        return $this;
     }
 
     public function isDoc()

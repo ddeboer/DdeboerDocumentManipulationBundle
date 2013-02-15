@@ -45,6 +45,7 @@ class File extends SymfonyFile
                 break;
 
             case 'application/msword':
+            case 'application/zip':
                 $finfo2 = new \finfo();
                 $info = $finfo2->buffer($string);
                 switch ($info) {
