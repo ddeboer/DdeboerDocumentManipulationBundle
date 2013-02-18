@@ -6,6 +6,7 @@ use Ddeboer\DocumentManipulationBundle\Document\DocumentInterface;
 use Ddeboer\DocumentManipulationBundle\Document\DocumentData;
 use Ddeboer\DocumentManipulationBundle\Document\Document;
 use Ddeboer\DocumentManipulationBundle\File\File;
+use Ddeboer\DocumentManipulationBundle\Exception\ManipulatorNotFoundException;
 
 /**
  * A chain of manipulators
@@ -62,10 +63,7 @@ class ManipulatorChain
         );
 
         if (0 === count($filtered)) {
-            throw new \Exception(
-                'No manipulator found for type ' . $type
-                . ' and operation ' . $operation
-            );
+            throw new ManipulatorNotFoundException($type, $operation);
         }
 
         // For now, just return the first compatible manipulator that we find
