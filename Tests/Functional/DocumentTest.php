@@ -75,9 +75,7 @@ class DocumentTest extends WebTestCase
         $document = $document1
             ->appendMultiple(array($document2, $document3));
 
-            var_dump($document->getFile()->getPathname());die;
-
-        $this->assertEquals('/tmp/output3.pdf', $document->getFile()->getPathname());
+        $this->assertEquals('application/pdf', $document->getFile()->getMimeType());
 
         $document1 = $this->factory->open('/tmp/output1.pdf');
         $document2 = $this->factory->open('/tmp/output2.pdf');
