@@ -76,15 +76,6 @@ class DocumentTest extends WebTestCase
             ->appendMultiple(array($document2, $document3));
 
         $this->assertEquals('application/pdf', $document->getFile()->getMimeType());
-
-        $document1 = $this->factory->open('/tmp/output1.pdf');
-        $document2 = $this->factory->open('/tmp/output2.pdf');
-        $document3 = $this->factory->open('/tmp/output3.pdf');
-
-        $document = $document1
-            ->append($document2)
-            ->append($document3)
-            ->save();
     }
 
     public function testMergeAndAppend()
