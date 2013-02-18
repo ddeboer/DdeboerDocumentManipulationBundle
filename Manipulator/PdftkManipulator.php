@@ -3,7 +3,7 @@
 namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 
 use Ddeboer\DocumentManipulationBundle\Document\DocumentInterface;
-use Symfony\Component\HttpFoundation\File\File;
+use Ddeboer\DocumentManipulationBundle\File\File;
 use Ddeboer\DocumentManipulationBundle\Manipulator\PdftkManipulator\Pdftk;
 
 /**
@@ -40,39 +40,64 @@ class PdftkManipulator implements ManipulatorInterface
             && in_array($operation, $this->supportedOperations);
     }
 
-    public function append(DocumentInterface $document1, DocumentInterface $document2)
+    /**
+     * Append one file
+     *
+     * @param File $file1
+     * @param File $file2
+     *
+     * @return File
+     */
+    public function append(File $file1, File $file2)
     {
         $files = array(
-            $document1->getFile()->getPathname(),
-            $document2->getFile()->getPathname()
+            $file1->getPathname(),
+            $file2->getPathname()
         );
 
         $outputFile = $this->pdftk->merge($files);
 
-        return new File($outputFile);
+        return File::fromFilename($outputFile);
     }
 
-    public function appendMultiple(DocumentInterface $document, array $documents)
+    /**
+     * Append multiple files
+     *
+     * @param File  $file
+     * @param array $files
+     *
+     * @return File
+     */
+    public function appendMultiple(File $file, array $files)
     {
-        $files = array(
-            $document->getFile()->getPathname()
+        $filenames = array(
+            $file->getPathname()
         );
 
-        foreach ($documents as $document) {
-            $files[] = $document->getFile()->getPathname();
+        foreach ($files as $file) {
+            $filenames[] = $file->getPathname();
         }
 
-        $outputFile = $this->pdftk->merge($files);
-        return new File($outputFile);
+        $outputFile = $this->pdftk->merge($filenames);
+
+        return File::fromFilename($outputFile);
     }
 
-    public function layer(DocumentInterface $foreground, DocumentInterface $background)
+    /**
+     * Layer foreground before background
+     *
+     * @param File $foreground
+     * @param File $background
+     *
+     * @return File
+     */
+    public function layer(File $foreground, File $background)
     {
         $filename = $this->pdftk->background(
-            $foreground->getFile()->getPathname(),
-            $background->getFile()->getPathname()
+            $foreground->getPathname(),
+            $background->getPathname()
         );
 
-        return file_get_contents($filename);
+        return File::fromFilename($filename);
     }
 }

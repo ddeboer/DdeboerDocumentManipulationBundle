@@ -89,40 +89,52 @@ class ManipulatorChain
     /**
      * Append one document to another
      *
-     * @param DocumentInterface $document Document
+     * @param DocumentInterface $document1 First document
+     * @param DocumentInterface $document2 Second document
      *
      * @return DocumentInterface
      */
     public function append(DocumentInterface $document1, DocumentInterface $document2)
     {
-        $outputFile = $this->findManipulator($document1->getType(), 'append')
-            ->append($document1, $document2);
+        $file = $this->findManipulator($document1->getType(), 'append')
+            ->append($document1->getFile(), $document2->getFile());
 
-        return new Document($this, File::fromFilename($outputFile));
+        return new Document($this, $file);
     }
 
     /**
      * Append multiple documents to the original document
      *
-     * @param DocumentInterface $document       Original document
-     * @param array             $otherDocuments Array of documents to be appended
+     * @param DocumentInterface   $document       Original document
+     * @param DocumentInterface[] $otherDocuments Array of documents to be appended
      *
      * @return DocumentInterface
      */
     public function appendMultiple(DocumentInterface $document, array $otherDocuments)
     {
-        $outputFile = $this->findManipulator($document->getType(), 'appendMultiple')
-            ->appendMultiple($document, $otherDocuments);
+        if (0 === count($otherDocuments)) {
+            throw new \InvalidArgumentException(
+                'You must specify at least one document to be appended'
+            );
+        }
 
-        return new Document($this, File::fromFilename($outputFile));
+        $files = array();
+        foreach ($otherDocuments as $otherDocument) {
+            $files[] = $otherDocument->getFile();
+        }
+
+        $file = $this->findManipulator($document->getType(), 'appendMultiple')
+            ->appendMultiple($document->getFile(), $files);
+
+        return new Document($this, $file);
     }
 
     public function layer(DocumentInterface $foreground, DocumentInterface $background)
     {
-        $outputContents = $this->findManipulator($foreground->getType(), 'layer')
-            ->layer($foreground, $background);
+        $file = $this->findManipulator($foreground->getType(), 'layer')
+            ->layer($foreground->getFile(), $background->getFile());
 
-        return new Document($this, File::fromString($outputContents));
+        return new Document($this, $file);
     }
 }
 

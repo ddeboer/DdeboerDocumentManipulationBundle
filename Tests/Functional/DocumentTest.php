@@ -66,6 +66,29 @@ class DocumentTest extends WebTestCase
             ->save();
     }
 
+    public function testAppendMultiple()
+    {
+        $document1 = $this->factory->open(__DIR__.'/../Fixtures/output.pdf');
+        $document2 = $this->factory->open(__DIR__.'/../Fixtures/letterhead.pdf');
+        $document3 = $this->factory->open('/tmp/output1.pdf');
+
+        $document = $document1
+            ->appendMultiple(array($document2, $document3));
+
+            var_dump($document->getFile()->getPathname());die;
+
+        $this->assertEquals('/tmp/output3.pdf', $document->getFile()->getPathname());
+
+        $document1 = $this->factory->open('/tmp/output1.pdf');
+        $document2 = $this->factory->open('/tmp/output2.pdf');
+        $document3 = $this->factory->open('/tmp/output3.pdf');
+
+        $document = $document1
+            ->append($document2)
+            ->append($document3)
+            ->save();
+    }
+
     public function testMergeAndAppend()
     {
         $this->factory
@@ -99,5 +122,15 @@ class DocumentTest extends WebTestCase
         $document
             ->merge($data)
             ->save('/tmp/image-from-string.pdf');
+    }
+
+    public function testLayer()
+    {
+        $foreground = $this->factory->open(__DIR__.'/../Fixtures/output.pdf');
+        $background = $this->factory->open(__DIR__.'/../Fixtures/letterhead.pdf');
+
+        $document = $foreground->putInFront($background);
+
+        $this->assertEquals('application/pdf', $document->getFile()->getMimeType());
     }
 }
