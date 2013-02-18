@@ -80,6 +80,23 @@ manipulator is defined as follows:
 </service>
 ```
 
+
+Run tests
+---------
+
+Run unit tests:
+
+```
+$ phpunit
+```
+
+Run functional tests:
+
+```
+$ phpunit -c app --group functional vendor/ddeboer/document-manipulation-bundle/Ddeboer/DocumentManipulationBundle/Tests/
+```
+
+
 Documentation
 -------------
 
