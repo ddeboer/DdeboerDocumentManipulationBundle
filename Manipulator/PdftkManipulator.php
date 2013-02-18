@@ -57,7 +57,8 @@ class PdftkManipulator implements ManipulatorInterface
 
         $outputFile = $this->pdftk->merge($files);
 
-        return File::fromFilename($outputFile);
+        // fromString to get proper (MD5) filename
+        return File::fromString(\file_get_contents($outputFile));
     }
 
     /**
@@ -80,7 +81,8 @@ class PdftkManipulator implements ManipulatorInterface
 
         $outputFile = $this->pdftk->merge($filenames);
 
-        return File::fromFilename($outputFile);
+        // fromString to get proper (MD5) filename
+        return File::fromString(\file_get_contents($outputFile));
     }
 
     /**
@@ -93,11 +95,12 @@ class PdftkManipulator implements ManipulatorInterface
      */
     public function layer(File $foreground, File $background)
     {
-        $filename = $this->pdftk->background(
+        $file = $this->pdftk->background(
             $foreground->getPathname(),
             $background->getPathname()
         );
 
-        return File::fromFilename($filename);
+        // fromString to get proper (MD5) filename
+        return File::fromString(\file_get_contents($file));
     }
 }
