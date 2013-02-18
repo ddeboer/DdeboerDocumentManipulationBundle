@@ -54,6 +54,8 @@ class DocumentTest extends WebTestCase
             ->append($document2)
             ->save('/tmp/output3.pdf');
 
+        $this->assertEquals('/tmp/output3.pdf', $document->getFile()->getPathname());
+
         $document1 = $this->factory->open('/tmp/output1.pdf');
         $document2 = $this->factory->open('/tmp/output2.pdf');
         $document3 = $this->factory->open('/tmp/output3.pdf');
