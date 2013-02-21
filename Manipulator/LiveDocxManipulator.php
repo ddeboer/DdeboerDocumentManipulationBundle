@@ -65,11 +65,14 @@ class LiveDocxManipulator implements ManipulatorInterface
                     $this->liveDocx->uploadImage($tmpFile);
                 }
 
-                $this->liveDocx->assign($field, $filename);
-            } else {
-                // Plain merge field
-                $this->liveDocx->assign($field, $value);
+                $value = $filename;
+            } elseif (\is_array($value) && empty($value)) {
+                // To prevent Undefined offset: 0 in
+                // ZendService/LiveDocx/MailMerge.php line 1175
+                $value = null;
             }
+
+            $this->liveDocx->assign($field, $value);
         }
 
         $this->liveDocx->createDocument();
