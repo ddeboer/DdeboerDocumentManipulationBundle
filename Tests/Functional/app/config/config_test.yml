@@ -3,6 +3,7 @@ framework:
   session:
         storage_id: session.storage.mock_file
   secret: ~
+  trusted_proxies: ~
 
 ddeboer_document_manipulation:
   livedocx:
