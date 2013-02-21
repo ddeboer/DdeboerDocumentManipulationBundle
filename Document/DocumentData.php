@@ -2,6 +2,8 @@
 
 namespace Ddeboer\DocumentManipulationBundle\Document;
 
+use Ddeboer\DocumentManipulationBundle\File\File;
+
 /**
  * A collection of key/value pairs that contains mail merge
  */
@@ -18,7 +20,25 @@ class DocumentData implements \IteratorAggregate, \Countable, \ArrayAccess
 
     public function set($key, $value)
     {
+        if (!\is_scalar($value) && !$value instanceof File) {
+            if (\is_array($value)) {
+                foreach ($value as $blockKey => $blockValue) {
+                    if (!\is_array($blockValue)) {
+                        throw new \InvalidArgumentException(
+                            'Block ' . $blockKey . ' must be an array'
+                        );
+                    }
+                }
+            } else {
+                throw new \InvalidArgumentException(
+                    'Value must be scalar, file or merge block array'
+                );
+            }
+
+        }
+
         $this->values[$key] = $value;
+
         return $this;
     }
 
