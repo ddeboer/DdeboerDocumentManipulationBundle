@@ -6,14 +6,16 @@ use Ddeboer\DocumentManipulationBundle\Document\Image;
 
 class DocumentDataTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSetScalar()
+
+    /**
+     * @dataProvider getValidValues()
+     */
+    public function testSetValidValues($key, $value)
     {
         $data = new DocumentData();
-        $data->set('Name', 'James');
-        $data->set('Age', 66);
+        $data->set($key, $value);
 
-        $this->assertEquals('James', $data->get('Name'));
-        $this->assertEquals(66, $data->get('Age'));
+        $this->assertEquals($value, $data->get($key));
     }
 
     public function testSetValidArray()
@@ -37,26 +39,32 @@ class DocumentDataTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @dataProvider getInvalidValues
      * @expectedException \InvalidArgumentException
      */
-    public function testSetInvalidArray()
+    public function testSetInvalidValues($key, $value)
     {
         $data = new DocumentData;
-        $data->set('InvalidBlock', array('test'));
+        $data->set($key, $value);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testSetInvalidValue()
+    public function getValidValues()
     {
-        $data = new DocumentData;
-        $data->set('InvalidValue', new \stdClass());
+        return array(
+            array('Name', 'James'),
+            array('Age', 66),
+            array('LicenseToKill', false),
+            array('EmptyStringField', ''),
+            array('NullField', null),
+            array('image:Photo', Image::fromFilename(__DIR__.'/../Fixtures/photo.jpg'))
+        );
     }
 
-    public function testSetImage()
+    public function getInvalidValues()
     {
-        $data = new DocumentData();
-        $data->set('image:Photo', Image::fromFilename(__DIR__.'/../Fixtures/photo.jpg'));
+        return array(
+            array('InvalidBlock', array('test')),
+            array('InvalidField', new \stdClass)
+        );
     }
 }

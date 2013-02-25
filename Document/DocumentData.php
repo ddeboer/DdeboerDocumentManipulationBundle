@@ -20,7 +20,7 @@ class DocumentData implements \IteratorAggregate, \Countable, \ArrayAccess
 
     public function set($key, $value)
     {
-        if (!\is_scalar($value) && !$value instanceof File) {
+        if (null != $value && !\is_scalar($value) && !$value instanceof File) {
             if (\is_array($value)) {
                 foreach ($value as $blockKey => $blockValue) {
                     if (!\is_array($blockValue)) {
