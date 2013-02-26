@@ -4,6 +4,7 @@ namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 
 use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorInterface;
 use Ddeboer\DocumentManipulationBundle\File\File;
+use Ddeboer\DocumentManipulationBundle\Exception\ManipulatorException;
 use ZendService\LiveDocx\MailMerge;
 
 /**
@@ -62,7 +63,12 @@ class LiveDocxManipulator implements ManipulatorInterface
                 if (!$this->liveDocx->imageExists($filename)) {
                     $tmpFile = \sys_get_temp_dir() . '/' . $filename;
                     \copy($value->getPathname(), $tmpFile);
-                    $this->liveDocx->uploadImage($tmpFile);
+
+                    try {
+                        $this->liveDocx->uploadImage($tmpFile);
+                    } catch (\Exception $e) {
+                        throw new ManipulatorException('LiveDocx', 'merge', $e);
+                    }
                 }
 
                 $value = $filename;
@@ -75,7 +81,13 @@ class LiveDocxManipulator implements ManipulatorInterface
             $this->liveDocx->assign($field, $value);
         }
 
-        $this->liveDocx->createDocument();
+        try {
+            $this->liveDocx->createDocument();
+        } catch (\Exception $exc) {
+            echo $exc->getMessage();
+        }
+
+
         $contents = $this->liveDocx->retrieveDocument($format);
 
         return $contents;
@@ -94,3 +106,4 @@ class LiveDocxManipulator implements ManipulatorInterface
         return false;
     }
 }
+
