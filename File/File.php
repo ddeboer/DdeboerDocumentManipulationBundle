@@ -63,7 +63,7 @@ class File extends SymfonyFile
         $filename = sys_get_temp_dir() . '/' . md5($string) . $extension;
         file_put_contents($filename, $string);
 
-        return new self($filename);
+        return new static($filename);
     }
 
     /**
