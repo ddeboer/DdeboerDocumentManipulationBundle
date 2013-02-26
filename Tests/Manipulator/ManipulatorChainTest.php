@@ -43,4 +43,14 @@ class ManipulatorChainTest extends \PHPUnit_Framework_TestCase
         $data = new DocumentData();
         $chain->merge($doc, $data);
     }
+
+    /**
+     * @expectedException \Ddeboer\DocumentManipulationBundle\Exception\ManipulatorNotFoundException
+     */
+    public function testManipulatorNotFoundExceptionIsThrown()
+    {
+        $chain = new ManipulatorChain();
+        $chain->findManipulator('type', 'operation');
+
+    }
 }
