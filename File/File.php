@@ -24,7 +24,7 @@ class File extends SymfonyFile
      */
     public static function fromFilename($filename)
     {
-        return new self($filename);
+        return new static($filename);
     }
 
     /**
