@@ -2,7 +2,7 @@ framework:
   test: ~
   session:
         storage_id: session.storage.mock_file
-  secret: ~
+  secret: 'secret'
   trusted_proxies: ~
 
 ddeboer_document_manipulation:
