@@ -5,6 +5,7 @@ namespace Ddeboer\DocumentManipulationBundle\Manipulator;
 use Ddeboer\DocumentManipulationBundle\Manipulator\ManipulatorInterface;
 use Ddeboer\DocumentManipulationBundle\File\File;
 use Ddeboer\DocumentManipulationBundle\Exception\ManipulatorException;
+use Ddeboer\DocumentManipulationBundle\Exception\InvalidDocumentException;
 use ZendService\LiveDocx\MailMerge;
 
 /**
@@ -72,10 +73,9 @@ class LiveDocxManipulator implements ManipulatorInterface
 
         try {
             $this->liveDocx->createDocument();
-        } catch (\Exception $exc) {
-            echo $exc->getMessage();
+        } catch (\Exception $e) {
+            throw new ManipulatorException('LiveDocx', 'merge', $e);
         }
-
 
         $contents = $this->liveDocx->retrieveDocument($format);
 
@@ -91,13 +91,17 @@ class LiveDocxManipulator implements ManipulatorInterface
     {
         $this->prepareTemplate($file);
         
-        $fields = $this->liveDocx->getFieldNames();
-            
-        $blocks = $this->liveDocx->getBlockNames();
-        foreach ($blocks as $block) {
-            $blocks[$block] = $this->liveDocx->getBlockFieldNames($block);
+        try {
+            $fields = $this->liveDocx->getFieldNames();
+
+            $blocks = $this->liveDocx->getBlockNames();
+            foreach ($blocks as $block) {
+                $blocks[$block] = $this->liveDocx->getBlockFieldNames($block);
+            }
+        } catch (\Exception $e) {
+            throw new ManipulatorException('LiveDocx', 'getMergeFields', $e);
         }
-        
+
         return $fields + $blocks;
     }
 
@@ -131,9 +135,16 @@ class LiveDocxManipulator implements ManipulatorInterface
             // Make sure file doesn't become writable only by www-data
             chmod($tmpFile, 0666 & ~umask());
 
-            $this->liveDocx->uploadTemplate($tmpFile);
+            // If LiveDocx throws an error at uploadTemplate, this is usually
+            // because the template is invalid, e.g., it has an incorrect file 
+            // extension.
+            try {
+                $this->liveDocx->uploadTemplate($tmpFile);
+            } catch (\Exception $e) {
+                throw new InvalidDocumentException($file, $e);
+            }
         }
-
+        
         $this->liveDocx->setRemoteTemplate($hash);
     }
 }
