@@ -65,7 +65,9 @@ class Document implements DocumentInterface
                     return self::TYPE_DOCX;
                 }
                 return self::TYPE_DOC;
-
+            case 'text/rtf':
+            case 'application/rtf':
+                return self::TYPE_RTF;
             default:
                 break;
         }
@@ -166,6 +168,14 @@ class Document implements DocumentInterface
     public function putInFront(DocumentInterface $background)
     {
         return $this->manipulators->layer($this, $background);
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getMergeFields()
+    {
+        return $this->manipulators->getMergeFields($this);
     }
 
     /**

@@ -136,5 +136,11 @@ class ManipulatorChain
 
         return new Document($this, $file);
     }
+    
+    public function getMergeFields(DocumentInterface $document)
+    {
+        return $this->findManipulator($document->getType(), 'getMergeFields')
+            ->getMergeFields($document->getFile());
+    }
 }
 

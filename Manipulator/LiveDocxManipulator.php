@@ -42,19 +42,8 @@ class LiveDocxManipulator implements ManipulatorInterface
         // LiveDocx requires a file extension, otherwise it will return empty
         // white pages, so upload templates with their file extension.
         $hash = $file->getHashFilename();
-
-        // Upload local template to server if it hasn't been uploaded yet
-        if (!$this->liveDocx->templateExists($hash)) {
-            $tmpFile = sys_get_temp_dir() . '/' . $hash;
-            copy($file->getPathname(), $tmpFile);
-
-            // Make sure file doesn't become writable only by www-data
-            chmod($tmpFile, 0666 & ~umask());
-
-            $this->liveDocx->uploadTemplate($tmpFile);
-        }
-
-        $this->liveDocx->setRemoteTemplate($hash);
+        
+        $this->prepareTemplate($file);
 
         foreach ($data as $field => $value) {
             if ($value instanceof File) {
@@ -92,18 +81,60 @@ class LiveDocxManipulator implements ManipulatorInterface
 
         return $contents;
     }
+    
+    /**
+     * Get merge fields in the document (template)
+     *
+     * @return array
+     */
+    public function getMergeFields(File $file)
+    {
+        $this->prepareTemplate($file);
+        
+        $fields = $this->liveDocx->getFieldNames();
+            
+        $blocks = $this->liveDocx->getBlockNames();
+        foreach ($blocks as $block) {
+            $blocks[$block] = $this->liveDocx->getBlockFieldNames($block);
+        }
+        
+        return $fields + $blocks;
+    }
 
     /**
      * {@inheritdoc}
      */
     public function supports($type, $operation)
     {
-        if (in_array($type, array('doc', 'docx'))
-            && in_array($operation, array('merge', 'convert'))) {
+        if (in_array($type, array('doc', 'docx', 'rtf'))
+            && in_array($operation, array('merge', 'convert', 'getMergeFields'))) {
             return true;
         }
 
         return false;
+    }
+    
+    /**
+     * Upload file to LiveDocx if it hasn't yet been uploaded
+     * 
+     * @param File $file
+     */
+    protected function prepareTemplate(File $file)
+    {
+        $hash = $file->getHashFilename();
+        
+        // Upload local template to server if it hasn't been uploaded yet
+        if (!$this->liveDocx->templateExists($hash)) {
+            $tmpFile = sys_get_temp_dir() . '/' . $hash;
+            copy($file->getPathname(), $tmpFile);
+
+            // Make sure file doesn't become writable only by www-data
+            chmod($tmpFile, 0666 & ~umask());
+
+            $this->liveDocx->uploadTemplate($tmpFile);
+        }
+
+        $this->liveDocx->setRemoteTemplate($hash);
     }
 }
 

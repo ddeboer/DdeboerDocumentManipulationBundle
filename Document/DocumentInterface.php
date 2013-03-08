@@ -10,6 +10,7 @@ interface DocumentInterface
     const TYPE_DOC  = 'doc';
     const TYPE_DOCX = 'docx';
     const TYPE_PDF  = 'pdf';
+    const TYPE_RTF  = 'rtf';
 
     /**
      * Save the document to a file
@@ -99,6 +100,13 @@ interface DocumentInterface
      * @return DocumentInterface
      */
     function putBehind(DocumentInterface $foreground);
+    
+    /**
+     * Get mail merge fields and blocks contained from the document
+     * 
+     * @return array
+     */
+    function getMergeFields();
 
     /**
      * Get document type

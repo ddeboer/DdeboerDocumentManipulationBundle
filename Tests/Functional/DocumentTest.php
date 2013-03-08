@@ -122,4 +122,21 @@ class DocumentTest extends WebTestCase
 
         $this->assertEquals('application/pdf', $document->getFile()->getMimeType());
     }
+    
+    public function testGetMergeFields()
+    {
+        $document = $this->factory->open(__DIR__.'/../Fixtures/document.docx');
+        
+        $this->assertEquals(
+            array(
+                'Name',
+                'FirstName',
+                'image:Photo',
+                'BadGuys' => array(
+                    'BadGuyName'
+                )
+            ),
+            $document->getMergeFields()
+        );
+    }
 }
