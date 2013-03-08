@@ -36,31 +36,9 @@ class File extends SymfonyFile
      */
     public static function fromString($string)
     {
-        // Try to determine file extension
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        $extension = null;
-        switch ($finfo->buffer($string)) {
-            case 'application/pdf':
-                $extension = '.pdf';
-                break;
-
-            case 'application/msword':
-            case 'application/zip':
-                $finfo2 = new \finfo();
-                $info = $finfo2->buffer($string);
-                switch ($info) {
-                    case 'Microsoft Office Document Microsoft Word Document':
-                        $extension = '.doc';
-                        break;
-
-                    case 'Microsoft Word 2007+':
-                    default:
-                        $extension = '.docx';
-                        break;
-                }
-        }
-
-        $filename = sys_get_temp_dir() . '/' . md5($string) . $extension;
+        $extension = self::guessExtensionFromContents($string);
+        
+        $filename = sys_get_temp_dir() . '/' . md5($string) . ($extension ? '.' . $extension : '');
         file_put_contents($filename, $string);
 
         return new static($filename);
@@ -98,4 +76,37 @@ class File extends SymfonyFile
     {
         return $this->getHash() . '.' . $this->getExtension();
     }
+    
+    /**
+     * Guess extension based on file contents
+     * 
+     * @param string $file File contents
+     *
+     * @return string Guessed file extension
+     */
+    public static function guessExtensionFromContents($file)
+    {
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        switch ($finfo->buffer($file)) {
+            case 'application/pdf':
+                return 'pdf';
+            
+            case 'application/msword':
+            case 'application/zip':
+                $finfo2 = new \finfo();
+                $info = $finfo2->buffer($file);
+                switch ($info) {
+                    case 'Microsoft Office Document Microsoft Word Document':
+                        return 'doc';
+
+                    default:
+                    case 'Microsoft Word 2007+':
+                        return 'docx';
+                }
+                
+            case 'text/rtf':
+            case 'application/rtf':
+                return 'rtf';
+        }
+   }
 }
