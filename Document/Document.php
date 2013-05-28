@@ -58,7 +58,8 @@ class Document implements DocumentInterface
         switch ($this->file->getMimeType()) {
             case 'application/pdf':
                 return self::TYPE_PDF;
-
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                return self::TYPE_DOCX;
             case 'application/msword':
             case 'application/zip':
                 if ('docx' == $this->file->getExtension()) {
