@@ -93,6 +93,7 @@ class File extends SymfonyFile
             
             case 'application/msword':
             case 'application/zip':
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
                 $finfo2 = new \finfo();
                 $info = $finfo2->buffer($file);
                 switch ($info) {
